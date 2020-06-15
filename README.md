@@ -1,38 +1,59 @@
-# :package_description
-
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/:package_name.svg?style=flat-square)](https://packagist.org/packages/spatie/:package_name)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/spatie/:package_name/run-tests?label=tests)](https://github.com/spatie/:package_name/actions?query=workflow%3Arun-tests+branch%3Amaster)
-[![Total Downloads](https://img.shields.io/packagist/dt/spatie/:package_name.svg?style=flat-square)](https://packagist.org/packages/spatie/:package_name)
-
-**Note:** Replace ```:author_name``` ```:author_username``` ```:author_email``` ```:package_name``` ```:package_description``` with their correct values in [README.md](README.md), [CHANGELOG.md](CHANGELOG.md), [CONTRIBUTING.md](CONTRIBUTING.md), [LICENSE.md](LICENSE.md) and [composer.json](composer.json) files, then delete this line.
-
-This is where your description should go. Try and limit it to a paragraph or two. Consider adding a small example.
-
-## Support us
-
-Learn how to create a package like this one, by watching our premium video course:
-
-[![Laravel Package training](https://spatie.be/github/package-training.jpg)](https://laravelpackage.training)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
-
+# PhpSh
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/nazmulpcc/phpsh.svg?style=flat-square)](https://packagist.org/packages/nazmulpcc/phpsh)
+[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/nazmulpcc/phpsh/run-tests?label=tests)](https://github.com/nazmulpcc/phpsh/actions?query=workflow%3Arun-tests+branch%3Amaster)
+[![Total Downloads](https://img.shields.io/packagist/dt/nazmulpcc/phpsh.svg?style=flat-square)](https://packagist.org/packages/nazmulpcc/phpsh)
+ 
 ## Installation
 
 You can install the package via composer:
 
 ```bash
-composer require spatie/:package_name
+composer require nazmulpcc/phpsh
 ```
 
-## Usage
+## Why?
 
-``` php
-$skeleton = new Spatie\Skeleton();
-echo $skeleton->echoPhrase('Hello, Spatie!');
+If writing shell scripts make you *uncomfortable* because it feels like an ecrypted alient language, PhpSh is for you.
+
+## Examples
+
+```php
+use PhpSh\Condition;
+use PhpSh\Script;
+
+$condition = Condition::create('$i')->lessThan(10);
+
+(new Script())
+    ->set('i', 0)
+    ->while($condition, function (Script $script){
+        $script->echo('$i');
+        $script->increment('i');
+    })
+    ->generate();
 ```
+The above example code will generate shell executable script like this:
+``` sh
+i=0
+while [ $i -lt 10 ]; do
+    echo -n $i
+    let i+=1
+done
+```
+Don't know how to do "if a file exists and is writable then do something"? PhpSh got your back!
+```php
+$condition = Condition::create()
+    ->fileExists('/path/to/file')
+    ->and()
+    ->writable('/path/to/file');
 
+(new Script())
+    ->if($condition, function (Script $script){
+        $script->printf("File found\n");
+    })->else(function (Script $script){
+        $script->printf("Oops!\n");
+    })
+    ->generate();
+```  
 ## Testing
 
 ``` bash
@@ -53,7 +74,7 @@ If you discover any security related issues, please email freek@spatie.be instea
 
 ## Credits
 
-- [:author_name](https://github.com/:author_username)
+- [Nazmul Alam](https://github.com/nazmulpcc)
 - [All Contributors](../../contributors)
 
 ## License

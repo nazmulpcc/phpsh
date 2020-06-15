@@ -1,22 +1,25 @@
 {
-    "name": "spatie/:package_name",
-    "description": ":package_description",
+    "name": "nazmulpcc/phpsh",
+    "description": "Generate shell scripts from PHP with ease",
     "keywords": [
-        "spatie",
-        ":package_name"
+        "php",
+        "shell",
+        "shell-script",
+        "bash",
+        "bash-script"
     ],
-    "homepage": "https://github.com/spatie/:package_name",
+    "homepage": "https://github.com/nazmulpcc/phpsh",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": ":author_email",
-            "homepage": "https://spatie.be",
+            "name": "Nazmul Alam",
+            "email": "nazmulpcc@gmail.com",
+            "homepage": "https://github.com/nazmulpcc/",
             "role": "Developer"
         }
     ],
     "require": {
-        "php": "^7.4"
+        "php": "^7.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.16",
@@ -25,17 +28,17 @@
     },
     "autoload": {
         "psr-4": {
-            "Spatie\\Skeleton\\": "src"
+            "PhpSh\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Spatie\\Skeleton\\Tests\\": "tests"
+            "PhpSh\\Tests\\": "tests"
         }
     },
     "scripts": {
         "psalm": "vendor/bin/psalm",
-        "test": "vendor/bin/phpunit",
+        "test": "vendor/bin/phpunit tests/*",
         "test-coverage": "vendor/bin/phpunit --coverage-html coverage",
         "format": "vendor/bin/php-cs-fixer fix --allow-risky=yes"
     },
