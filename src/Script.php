@@ -7,36 +7,35 @@ class Script
     /**
      * @var string[]
      */
-    protected  $fragments = [];
+    protected $fragments = [];
 
+    /**
+     * @var int
+     */
     protected $nested = 0;
-
-    public function __construct()
-    {
-    }
 
     /**
      * Add a new command line
      * @param string|static $expression
-     * @return $this
+     * @return self
      */
-    public function line($expression)
+    public function line($expression) : self
     {
-        if($expression instanceof static){
-            $expression = $expression->generate();
-        }
+        $expression = (string) $expression;
+
         return $this->addFragment($expression);
     }
 
     /**
      * Set the value of a variable
-     * @param $variable
-     * @param $expression
+     * @param string $variable
+     * @param string $expression
      * @return self
      */
-    public function set($variable, $expression) : self
+    public function set(string $variable, string $expression) : self
     {
-        return $this->line(sprintf('%s=%s',
+        return $this->line(sprintf(
+            '%s=%s',
             $variable,
             is_numeric($expression) ? $expression : static::doubleQuote($expression)
         ));
@@ -50,27 +49,29 @@ class Script
      * @param string $tag
      * @return self
      */
-    public function if($condition, callable $callable, bool $double = false, string $tag = 'if'): self
+    public function if($condition, callable $callable, bool $double = false, string $tag = 'if') : self
     {
         $script = $this->newNestedScript($callable);
+
         return $this
             ->line(implode(' ', [
                 $tag,
                 $double ? '[[ ' : '[ ',
                 $condition,
                 $double ? ' ]]' : ' ]',
-                '; then'
+                '; then',
             ]))
             ->line($script);
     }
 
     /**
      * @param callable $callable
-     * @return $this
+     * @return self
      */
-    public function else(callable $callable)
+    public function else(callable $callable) : self
     {
         $script = $this->newNestedScript($callable);
+
         return $this
             ->line('else')
             ->line($script)
@@ -81,9 +82,9 @@ class Script
      * @param string|Condition $condition
      * @param callable $callable
      * @param bool $double
-     * @return $this
+     * @return self
      */
-    public function elseif($condition, callable $callable, bool $double = true)
+    public function elseif($condition, callable $callable, bool $double = true) : self
     {
         return $this->if($condition, $callable, $double, 'elif');
     }
@@ -91,26 +92,26 @@ class Script
     /**
      * @see Script::fi
      */
-    public function endif() : self 
+    public function endif() : self
     {
         return $this->fi();
     }
 
     /**
      * Finish up an if block
-     * @return $this
+     * @return self
      */
-    public function fi()
+    public function fi() : self
     {
         return $this->line('fi');
     }
 
     /**
-     * @param $variable
+     * @param string $variable
      * @param callable $callable
      * @return self
      */
-    public function switch($variable, callable $callable) : self
+    public function switch(string $variable, callable $callable) : self
     {
         return $this
             ->line(sprintf('case $%s', $variable))
@@ -119,11 +120,11 @@ class Script
     }
 
     /**
-     * @param $pattern
+     * @param string $pattern
      * @param callable $callable
      * @return self
      */
-    public function case($pattern, callable $callable) : self
+    public function case(string $pattern, callable $callable) : self
     {
         return $this
             ->line("$pattern)")
@@ -139,7 +140,7 @@ class Script
     public function while($condition, callable $callable) : self
     {
         return $this
-            ->line(sprintf('while [ %s ]; do', $condition))
+            ->line(sprintf('while [ %s ]; do', (string) $condition))
             ->line($this->newNestedScript($callable))
             ->line('done');
     }
@@ -155,11 +156,11 @@ class Script
 
     /**
      * @param string $expression
-     * @return static
+     * @return self
      */
     public function continue(string $expression = '') : self
     {
-        $this->line('continue '. $expression);
+        return $this->line('continue '. $expression);
     }
 
     /**
@@ -206,7 +207,7 @@ class Script
         return $this->line(implode(' ', [
             'printf',
             static::doubleQuote($expression),
-            $arguments ? static::doubleQuote(implode('" "', $arguments)) : ''
+            $arguments ? static::doubleQuote(implode('" "', $arguments)) : '',
         ]));
     }
 
@@ -228,13 +229,14 @@ class Script
     {
         $result = '';
         $length = count($this->fragments);
-        for ($i=0; $i < $length; $i++){
+        for ($i = 0; $i < $length; $i++) {
             $result .= str_pad('', $this->nested, "\t");
             $result .= $this->fragments[$i];
-            if($i < $length - 1){
+            if ($i < $length - 1) {
                 $result .= PHP_EOL;
             }
         }
+
         return $result;
     }
 
@@ -248,12 +250,13 @@ class Script
 
     /**
      * Add a new shell fragment
-     * @param $line
-     * @return $this
+     * @param string $line
+     * @return self
      */
-    protected function addFragment($line)
+    protected function addFragment(string $line) : self
     {
         $this->fragments[] = $line;
+
         return $this;
     }
 
@@ -267,6 +270,7 @@ class Script
         $script = new Script();
         $script->nested = $this->nested + 1;
         call_user_func_array($callable, [&$script]);
+
         return $script;
     }
 }

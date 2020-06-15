@@ -2,7 +2,6 @@
 
 namespace PhpSh;
 
-
 class Condition
 {
     /**
@@ -18,63 +17,63 @@ class Condition
     public static function create($expression = false) : self
     {
         $instance = new static();
-        if($expression){
+        if ($expression) {
             return $instance->addFragment($expression);
-        }else{
+        } else {
             return $instance;
         }
     }
 
     /**
-     * @param $expression
+     * @param string $expression
      * @return self
      */
-    public function equals($expression) : self
+    public function equals(string $expression) : self
     {
         return $this->addFragment('-eq '. $expression);
     }
 
     /**
-     * @param $expression
-     * @return static
+     * @param string $expression
+     * @return self
      */
-    public function notEquals($expression) : self
+    public function notEquals(string $expression) : self
     {
         return $this->addFragment('-ne '. $expression);
     }
 
     /**
-     * @param $expression
+     * @param string $expression
      * @return self
      */
-    public function greaterThan($expression) : self
+    public function greaterThan(string $expression) : self
     {
         return $this->addFragment('-gt '. $expression);
     }
 
     /**
-     * @param $expression
+     * @param string $expression
      * @return self
      */
-    public function lessThan($expression) : self
+    public function lessThan(string $expression) : self
     {
         return $this->addFragment('-lt '. $expression);
     }
 
     /**
-     * @param $expression
+     * @param string $expression
      * @return self
      */
-    public function notLessThan($expression) : self
+    public function notLessThan(string $expression) : self
     {
         return $this->addFragment('-ge '. $expression);
     }
 
     /**
-     * @param $expression
+     * @param string $expression
      * @return self
      */
-    public function notGreaterThan($expression) : self
+    public function notGreaterThan(string $expression) : self
     {
         return $this->addFragment('-le '. $expression);
     }
@@ -96,31 +95,32 @@ class Condition
     }
 
     /**
-     * @param $variable
+     * @param string $variable
      * @return self
      */
-    public function isEmpty($variable) : self
+    public function isEmpty(string $variable) : self
     {
         return $this->addFragment(sprintf('-z $%s', $variable));
     }
 
     /**
-     * @param $variable
+     * @param string $variable
      * @return self
      */
-    public function isset($variable) : self
+    public function isset(string $variable) : self
     {
-        if ($variable[0] === '$'){
+        if ($variable[0] === '$') {
             $variable = substr($variable, 1);
         }
+
         return $this->isEmpty(sprintf('{%s+x}', $variable));
     }
 
     /**
-     * @param $variable
+     * @param string $variable
      * @return self
      */
-    public function isNotEmpty($variable) : self
+    public function isNotEmpty(string $variable) : self
     {
         return $this->addFragment(sprintf('-n $%s', $variable));
     }
@@ -199,20 +199,20 @@ class Condition
     }
 
     /**
-     * @param $path
-     * @return static
+     * @param string $path
+     * @return self
      */
-    public function directoryExists($path) : self
+    public function directoryExists(string $path) : self
     {
         return $this->isDir($path);
     }
 
     /**
-     * @param $operator
-     * @param $path
+     * @param string $operator
+     * @param string $path
      * @return self
      */
-    public function checkPath($operator, $path) : self
+    public function checkPath(string $operator, string $path) : self
     {
         return $this->addFragment("-{$operator} $path");
     }
@@ -233,12 +233,13 @@ class Condition
 
     /**
      *
-     * @param $part
+     * @param string $part
      * @return self
      */
-    protected function addFragment($part) : self
+    protected function addFragment(string $part) : self
     {
         $this->fragments[] = $part;
+
         return $this;
     }
 }

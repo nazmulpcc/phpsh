@@ -15,7 +15,7 @@ class ConditionTests extends TestCase
         $condition = Condition::create('$i')->lessThan(10);
         $sh = $script
             ->set('i', 5)
-            ->if($condition, function (Script $script){
+            ->if($condition, function (Script $script) {
                 $script->printf('OK');
             })
             ->endif()
