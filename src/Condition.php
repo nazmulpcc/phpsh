@@ -36,6 +36,7 @@ class Condition
     public function is(string $variable) : self
     {
         $variable = $this->safeVariable($variable);
+
         return $this->addFragment($variable);
     }
 
@@ -116,6 +117,7 @@ class Condition
     public function isEmpty(string $variable) : self
     {
         $variable = $this->safeVariable($variable);
+
         return $this->addFragment('-z '. $variable);
     }
 
@@ -126,6 +128,7 @@ class Condition
     public function isset(string $variable) : self
     {
         $variable = $this->removeDollarSign($variable);
+
         return $this->isEmpty(sprintf('{%s+x}', $variable));
     }
 
@@ -136,6 +139,7 @@ class Condition
     public function isNotEmpty(string $variable) : self
     {
         $variable = $this->safeVariable($variable);
+
         return $this->addFragment('-n '. $variable);
     }
 
@@ -254,6 +258,7 @@ class Condition
         if ($variable[0] !== '$') {
             return '$'. $variable;
         }
+
         return $variable;
     }
 
@@ -267,6 +272,7 @@ class Condition
         if ($variable[0] === '$') {
             return substr($variable, 1);
         }
+
         return $variable;
     }
 
