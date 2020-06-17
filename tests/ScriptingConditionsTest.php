@@ -6,7 +6,7 @@ use PhpSh\Condition;
 use PhpSh\Script;
 use PHPUnit\Framework\TestCase;
 
-class ConditionsInScriptsTest extends TestCase
+class ScriptingConditionsTest extends TestCase
 {
     /** @test */
     public function it_can_build_an_if_statement()
@@ -22,9 +22,7 @@ class ConditionsInScriptsTest extends TestCase
         $this->assertEquals('OK', shell_exec($sh));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_can_build_an_if_statement_with_multiple_conditions()
     {
         $sh = (new Script())
@@ -37,9 +35,7 @@ class ConditionsInScriptsTest extends TestCase
         $this->assertEquals('OK', shell_exec($sh));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_can_build_an_if_else_statement()
     {
         $sh = (new Script())
@@ -53,9 +49,7 @@ class ConditionsInScriptsTest extends TestCase
         $this->assertEquals('OK', shell_exec($sh));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_can_build_an_if_elseif_else_statement()
     {
         $sh = (new Script())
@@ -68,6 +62,25 @@ class ConditionsInScriptsTest extends TestCase
                 $script->printf('NOT_OK');
             })
             ->generate();
+        $this->assertEquals('OK', shell_exec($sh));
+    }
+
+    /** @test */
+    public function it_can_build_switch_statement()
+    {
+        $sh = (new Script())
+            ->set('i', 1)
+            ->decrement('i')
+            ->switch('i', function (Script $script) {
+                $script
+                    ->case('1', function (Script $script) {
+                        $script->echo('NOT_OK');
+                    })
+                    ->case('*', function (Script $script) {
+                        $script->echo('OK');
+                    });
+            });
+
         $this->assertEquals('OK', shell_exec($sh));
     }
 }
