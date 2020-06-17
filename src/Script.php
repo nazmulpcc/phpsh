@@ -114,7 +114,7 @@ class Script
     public function switch(string $variable, callable $callable) : self
     {
         return $this
-            ->line(sprintf('case $%s', $variable))
+            ->line(sprintf('case $%s in', $variable))
             ->line($this->newNestedScript($callable))
             ->line('esac');
     }
@@ -178,7 +178,7 @@ class Script
      * @param $count
      * @return self
      */
-    public function decrement(string $variable, int $count) : self
+    public function decrement(string $variable, int $count = 1) : self
     {
         return $this->line(sprintf('let %s-=%d', $variable, $count));
     }

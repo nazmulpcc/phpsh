@@ -5,6 +5,11 @@ namespace PhpSh;
 class Condition
 {
     /**
+     * @var string
+     */
+    protected $lastVariable = '';
+
+    /**
      * @var string[]
      */
     protected $fragments = [];
@@ -22,6 +27,16 @@ class Condition
         } else {
             return $instance;
         }
+    }
+
+    /**
+     * @param string $variable
+     * @return self
+     */
+    public function is(string $variable) : self
+    {
+        $variable = $this->safeVariable($variable);
+        return $this->addFragment($variable);
     }
 
     /**
@@ -100,7 +115,8 @@ class Condition
      */
     public function isEmpty(string $variable) : self
     {
-        return $this->addFragment(sprintf('-z $%s', $variable));
+        $variable = $this->safeVariable($variable);
+        return $this->addFragment('-z '. $variable);
     }
 
     /**
@@ -109,10 +125,7 @@ class Condition
      */
     public function isset(string $variable) : self
     {
-        if ($variable[0] === '$') {
-            $variable = substr($variable, 1);
-        }
-
+        $variable = $this->removeDollarSign($variable);
         return $this->isEmpty(sprintf('{%s+x}', $variable));
     }
 
@@ -122,7 +135,8 @@ class Condition
      */
     public function isNotEmpty(string $variable) : self
     {
-        return $this->addFragment(sprintf('-n $%s', $variable));
+        $variable = $this->safeVariable($variable);
+        return $this->addFragment('-n '. $variable);
     }
 
     /**
@@ -229,6 +243,31 @@ class Condition
     public function __toString() : string
     {
         return $this->generate();
+    }
+
+    /**
+     * @param $variable
+     * @return string
+     */
+    protected function safeVariable($variable) : string
+    {
+        if ($variable[0] !== '$') {
+            return '$'. $variable;
+        }
+        return $variable;
+    }
+
+    /**
+     * Remove $ from a variable
+     * @param $variable
+     * @return string
+     */
+    protected function removeDollarSign($variable) : string
+    {
+        if ($variable[0] === '$') {
+            return substr($variable, 1);
+        }
+        return $variable;
     }
 
     /**
